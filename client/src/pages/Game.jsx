@@ -128,6 +128,7 @@ function Game() {
                  </button>
         </form>
 
+        {/* add button to show/hide pointlist */}
 
        {isListReady && PointList({title: "Liste des points", points: pointList})}
 
