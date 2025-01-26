@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PointList from '../components/PointList'
 
 function Game() {
@@ -9,6 +9,9 @@ function Game() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [pointList, setPointList] = useState([]);
     const [isListReady, setIsListReady] = useState(false);
+
+    //todo change to url for results
+    const url = "http://localhost:8080/api"
 
     const handleSubmit = (e) =>{
         e.preventDefault();
@@ -70,6 +73,24 @@ function Game() {
         setIsListReady(true);
 
     }
+
+    //testing front/back connection
+    useEffect(() => {
+        fetchApi();
+    }, [])
+
+    const fetchApi = async () => {
+        try {
+          const response = await fetch(url); 
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json(); 
+          console.log(data.results); 
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
 
     return (
     <div className="w-1/2 mx-auto my-20">

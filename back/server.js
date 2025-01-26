@@ -1,21 +1,22 @@
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Obtenir le répertoire courant (équivalent de __dirname)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+const express = require('express');
+const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 5000;
+const PORT = 8080;
 
-// Serve les fichiers statiques générés par Vite
-app.use(express.static(path.join(__dirname, '../client/dist')));
+ // CORS configuration
+const corsOptions = {
+    origin: "http://localhost:5173", // Autorise uniquement cette origine
+    methods: "GET,POST", // Méthodes autorisées
+    allowedHeaders: "Content-Type,Authorization", // En-têtes autorisés
+  };
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+app.use(cors(corsOptions)); // Appliquer la configuration CORS
+
+app.get('/api', (req, res) => {
+    res.json({ results: [1, 2, 3] });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+//listen on port 8080 for all requests
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
