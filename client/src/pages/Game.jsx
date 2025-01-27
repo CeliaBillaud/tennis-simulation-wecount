@@ -70,26 +70,24 @@ function Game() {
         setIsListReady(true);
     }
 
-    //testing front/back connection
-    // useEffect(() => {
-    //     sendResults();
-    // }, [])
-
-    // const sendResults = async () => {
-    //     try {
-    //       const response = await fetch(url, {
-    //         method: "POST",
-    //         body: JSON.stringify({ player1: player1Name, player2: player2Name, pointList: pointList }),
-    //       }); 
-    //       if (!response.ok) {
-    //         throw new Error(`HTTP error! status: ${response.status}`);
-    //       }
-    //       const data = await response.json(); 
-    //       console.log(data); 
-    //     } catch (error) {
-    //       console.error("Error fetching data:", error);
-    //     }
-    //   };
+     const sendResults = async () => {
+         try {
+           const response = await fetch(url, {
+             method: "POST",
+             headers: {
+                "Content-Type": "application/json",
+              },
+             body: JSON.stringify({ player1 : player1Name, player2: player2Name, pointList: pointList }),
+           }); 
+           if (!response.ok) {
+             throw new Error(`HTTP error! status: ${response.status}`);
+           }
+           const data = await response.json(); 
+           console.log(data.pointList ); 
+         } catch (error) {
+           console.error("Error fetching data:", error);
+         }
+       };
 
     return (
     <div className="w-1/2 mx-auto my-20">
@@ -146,17 +144,30 @@ function Game() {
             <button 
                 type="submit" 
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                disabled={isPlaying}
                  >
-                    {isPlaying ? "Match en cours" : "Lancer la partie !"}
+                    Lancer la partie !
                  </button>
         </form>
 
+        <div className="mt-4">
+        {/*todo display score and winner */}
+        {isListReady && <button
+            type="submit"
+            onClick={sendResults}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >Calculer Score Final
+        </button>}
+
         {/* add button to show/hide pointlist */}
 
-       {isListReady && PointList({title: "Liste des points", points: pointList})}
+        {isListReady && PointList({title: "Liste des points", points: pointList})}
 
-       {/*todo display score and winner */}
+        </div>
+
+
+       
+
+      
 
       
 

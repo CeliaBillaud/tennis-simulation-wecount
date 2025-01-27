@@ -1,5 +1,8 @@
-const express = require('express');
-const cors = require('cors');
+
+import express from "express";
+import cors from "cors";
+import calculateScore from "./calculate-score.js";
+
 const app = express();
 const PORT = 8080;
 
@@ -18,14 +21,16 @@ const corsOptions = {
 app.use(cors(corsOptions)); 
 
 app.post('/api/calculate-score', (req, res) => {
-    const { player1Name, player2Name, pointList } = req.body;
+    const { player1, player2, pointList } = req.body;
     
     try {
-    if (!player1Name || !player2Name  || !pointList) {
+    if (!player1 || !player2  || !pointList) {
       throw new Error();
     }
 
-    res.status(200).json({ player1Name, player2Name, pointList });
+    const { player1Points, player2Points} = calculateScore(player1, player2, pointList);
+    //todo send back winner and results 
+    res.status(200).json({ player1Points, player2Points});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
