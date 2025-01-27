@@ -3,6 +3,8 @@ import PointList from '../components/PointList'
 
 function Game() {
 
+    const [player1Name, setPlayer1Name] = useState("");
+    const [player2Name, setPlayer2Name] = useState("");
     const [player1Level, setPlayer1Level] = useState(5);
     const [player2Level, setPlayer2Level] = useState(5);
 
@@ -10,15 +12,10 @@ function Game() {
     const [pointList, setPointList] = useState([]);
     const [isListReady, setIsListReady] = useState(false);
 
-    //todo change to url for results
-    const url = "http://localhost:8080/api"
+    const url = "http://localhost:8080/api/calculate-score"
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        
-        const formData = new FormData(e.target);
-        const player1Name = formData.get('player1Name'); 
-        const player2Name = formData.get('player2Name'); 
 
         if (!player1Name || !player2Name) {
             //todo change error message
@@ -41,8 +38,8 @@ function Game() {
     const restartGame = () => {
         setIsListReady(false);
         setPointList([]);
+        setIsPlaying(false);
     };
-
 
     // const gameStart = () => {
     //     setIsPlaying(true);
@@ -51,46 +48,48 @@ function Game() {
     const generatePointsArray = (player1, player2, randomArray, numPoints = 150) => {
 
         //calculate the chance of winning a point for each player
-        const player1Chance = player1.level / (player1.level + player2.level);
+        const player1Chance = parseInt(player1.level) / (parseInt(player1.level) + parseInt(player2.level));
         const player2Chance = 1 - player1Chance;
 
-        const pointsArray = [];
+        let pointsArray = [];
 
         setIsPlaying(true);
 
-        randomArray.forEach( (value, index) => {
+        pointsArray = randomArray.map((value) => {
             if ( player1Chance === player2Chance){
-                value < 0.5 ? pointsArray.push(`Point ${index+1} : remporté par ${player1.name}`) : pointsArray.push(`Point ${index+1} : remporté par ${player2.name}`);
+                return value < 0.5 ? player1.name : player2.name;
             } else if (value < player1Chance){
-                pointsArray.push(`Point ${index+1} : remporté par ${player1.name}`);
+                return player1.name;
             } else {
-                pointsArray.push(`Point ${index+1} : remporté par ${player2.name}`);
+               return player2.name;
             }
-        });
+        })
 
         setPointList(pointsArray);
         setIsPlaying(false);
         setIsListReady(true);
-
     }
 
     //testing front/back connection
-    useEffect(() => {
-        fetchApi();
-    }, [])
+    // useEffect(() => {
+    //     sendResults();
+    // }, [])
 
-    const fetchApi = async () => {
-        try {
-          const response = await fetch(url); 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json(); 
-          console.log(data.results); 
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
+    // const sendResults = async () => {
+    //     try {
+    //       const response = await fetch(url, {
+    //         method: "POST",
+    //         body: JSON.stringify({ player1: player1Name, player2: player2Name, pointList: pointList }),
+    //       }); 
+    //       if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //       }
+    //       const data = await response.json(); 
+    //       console.log(data); 
+    //     } catch (error) {
+    //       console.error("Error fetching data:", error);
+    //     }
+    //   };
 
     return (
     <div className="w-1/2 mx-auto my-20">
@@ -104,7 +103,9 @@ function Game() {
                     type="text"     
                     name="player1Name" 
                     className="border"
-                    defaultValue=""/>
+                    value={player1Name}
+                    onChange={(e) => setPlayer1Name(e.target.value)}
+                    />
             </label>
             <label className="flex flex-col">
                 Niveau : {player1Level}/10
@@ -126,7 +127,9 @@ function Game() {
                     type="text"     
                     name="player2Name" 
                     className="border"
-                    defaultValue=""/>
+                    value={player2Name}
+                    onChange={(e) => setPlayer2Name(e.target.value)}
+                    />
             </label>
             <label className="flex flex-col">
                 Niveau : {player2Level}/10

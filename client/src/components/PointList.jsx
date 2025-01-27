@@ -6,8 +6,8 @@ function PointList({ title, points }) {
     <div className="mt-8">
         <h2 className="text-2xl font-bold">{title}</h2>
         <ul>
-            {points.map((point, index) => (
-                <li key={index}>{point}</li>
+            {points.map((name, index) => (
+                <li key={index}>Point {index+1} : remporté par {name}</li>
             ))}
         </ul>
     </div>
