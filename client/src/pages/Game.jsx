@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import PointList from '../components/PointList'
+import ScoreDisplay from '../components/ScoreDisplay';
 
 function Game() {
 
@@ -11,6 +12,7 @@ function Game() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [pointList, setPointList] = useState([]);
     const [isListReady, setIsListReady] = useState(false);
+    const [matchResult, setMatchResult] = useState();
 
     const url = "http://localhost:8080/api/calculate-score"
 
@@ -40,10 +42,6 @@ function Game() {
         setPointList([]);
         setIsPlaying(false);
     };
-
-    // const gameStart = () => {
-    //     setIsPlaying(true);
-    // }
 
     const generatePointsArray = (player1, player2, randomArray, numPoints = 150) => {
 
@@ -83,15 +81,14 @@ function Game() {
              throw new Error(`HTTP error! status: ${response.status}`);
            }
            const data = await response.json(); 
-           console.log(data.winner); 
-           console.log(data.sets); 
+           setMatchResult(data);
          } catch (error) {
            console.error("Error fetching data:", error);
          }
        };
 
     return (
-    <div className="w-1/2 mx-auto my-20">
+    <div className="w-2/3 mx-auto my-20">
         <h1 className="text-4xl font-extrabold text-center">Tennis Simulator</h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col justify-center content-center mt-8 gap-2 w-1/2 mx-auto">
@@ -151,7 +148,7 @@ function Game() {
         </form>
 
         <div className="mt-4">
-        {/*todo display score and winner */}
+        
         {isListReady && <button
             type="submit"
             onClick={sendResults}
@@ -159,18 +156,20 @@ function Game() {
             >Calculer Score Final
         </button>}
 
+        {matchResult && (
+            <ScoreDisplay 
+                winner={matchResult.winner}
+                sets={matchResult.sets}
+                player1Name={player1Name}
+                player2Name={player2Name}
+            />
+)}
+
         {/* add button to show/hide pointlist */}
 
         {isListReady && PointList({title: "Liste des points", points: pointList})}
 
         </div>
-
-
-       
-
-      
-
-      
 
     </div>
     )
