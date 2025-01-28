@@ -83,7 +83,8 @@ function Game() {
              throw new Error(`HTTP error! status: ${response.status}`);
            }
            const data = await response.json(); 
-           console.log(data.pointList ); 
+           console.log(data.winner); 
+           console.log(data.sets); 
          } catch (error) {
            console.error("Error fetching data:", error);
          }

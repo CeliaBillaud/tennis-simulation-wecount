@@ -28,9 +28,9 @@ app.post('/api/calculate-score', (req, res) => {
       throw new Error();
     }
 
-    const { player1Points, player2Points} = calculateScore(player1, player2, pointList);
+    const { winner, sets} = calculateScore(player1, player2, pointList);
     //todo send back winner and results 
-    res.status(200).json({ player1Points, player2Points});
+    res.status(200).json({ winner, sets});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
